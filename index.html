@@ -95,7 +95,7 @@ div:nth-child(even) {
             container.appendChild(myDiv);
       }
     };
-    xhttp.open("GET", "t"+i+".txt", true);
+    xhttp.open("GET", "https://raw.githubusercontent.com/rudyrim/cardd/main/t"+i+".txt", true);
     xhttp.send();
 }
   function myFunction(responseText) {
@@ -105,7 +105,7 @@ div:nth-child(even) {
         +"<span class='state'>" + responseText.split("*")[2]+"</span>"
         + "</p></br>"
         + "<p class='date'>" + responseText.split("*")[3]+"</p>"
-        +"<img class='image'src=" + responseText.split("*")[4]+">"
+        +"<img class='image'src=https://raw.githubusercontent.com/rudyrim/cardd/main/" + responseText.split("*")[4]+">"
         + "<p class='description'>" + responseText.split("*")[5]+"</p>"
         + "<Button class='lien'><a href='"+responseText.split("*")[6]+"'>"
         +responseText.split("*")[6]+"</a></Button>";   
