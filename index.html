@@ -69,18 +69,7 @@
 }
     </style>
     <style>
-      #pickyDate{
-      color:#4f372d;
-      font-size: 20px;
-      width:350px;
-      background-color:#eb6841 ;
-   
-  }
-    #showDate{
-      width:350px;
-      background-color:#eb6841 ;
-      display:none;
-    }
+
   .items{
     
     text-align:center;
@@ -95,6 +84,9 @@
   .Calendrier{
       width:250px;
   }
+  #headcalen{
+    text-align: center;
+  }
   #bodycalen{
       height: 300px;
       background:#00a0b0;
@@ -104,13 +96,45 @@
       background:#00ffb0;
       display : none;
   }
-  
+  #myBtn {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  z-index: 99;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  background-color: red;
+  color: white;
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 4px;
+}
+
+#myBtn:hover {
+  background-color: #555;
+}
+  </style>
+  <style>
+      @media screen and (min-width: 600px) {
+  body {
+    background-color: blue;
+  }
+}
+
+/* On screens that are 600px or less, set the background color to olive */
+@media screen and (max-width: 600px) {
+  body {
+    background-color: olive;
+  }
+}
   </style>
 <body>
     <div class="calendrier">
       <div id="headcalen">
-        <span style="width:33%"><button onclick="myFunction()"> Event </button></span>
-        <span id="selectDate" style="width:auto"> Date</span>
+        <!-- <span style="width:33%"><button onclick="myFunction()"> Event </button></span> -->
+        <span id="selectDate"> </span>
       </div> 
       <div id="bodycalen"></div>
       <div id="bodyevent"></div>
@@ -120,27 +144,57 @@
   </div>
 
 
+  <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
 
-<script> 
-              for( var i=0; i<10;i++){
-                  card(i);
-              }
-     
-   function card(i) {
+  <script>//TopScroll
+    var mybutton = document.getElementById("myBtn");
+    window.onscroll = function() {scrollFunction()};
+    
+    function scrollFunction() {
+      if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        mybutton.style.display = "block";
+      } else {
+        mybutton.style.display = "none";
+      }
+    }
+    function topFunction() {
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    }
+    </script>
+
+<script> //Global
+var ladate=new Date();
+var todayDate = ladate.getDate()+"-"+(ladate.getMonth()+1)+"-"+ladate.getFullYear();
+document.getElementById('selectDate').innerHTML=todayDate;
+
+var selectDate = todayDate ;
+var listdate=[];
+ // [new Date((new Date(2021, 1, 17)).valueOf() + 1*(86400000)) , new Date(2021, 1, 17)];
+var filedate=listdate[0].getDate()+"-"+(listdate[0].getMonth()+1)+"-"+listdate[0].getFullYear();
+</script>
+
+<script>//Card
+function searchFile(selectDate){
+     for( var i=0; i<2;i++){
+      card(selectDate,i);    
+    }
+}
+   
+   function card(selectDate,i) {
       var xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-
- var node = document.createElement("div");
-  var textnode = document.createTextNode(Resp(this.responseText));
-  node.innerHTML = Resp(this.responseText) ;
-  document.getElementById("container").appendChild(node);
+        var node = document.createElement("div");
+        var textnode = document.createTextNode(Resp(this.responseText));
+        node.innerHTML = Resp(this.responseText) ;
+        document.getElementById("container").appendChild(node);
         }
       };
       //https://raw.githubusercontent.com/rudyrim/cardd/main/"
-      xhttp.open("GET", "https://raw.githubusercontent.com/rudyrim/cardd/main/t"+i+".txt", true);
-      xhttp.send();
-  }
+      xhttp.open("GET",selectDate+"_"+i+".txt", true);
+    xhttp.send();
+    }
     function Resp(responseText) {
         let  resp= "<p class='name'>" + responseText.split("*")[0]+"</p></br>"
           + "<p class='color-state'>"
@@ -148,7 +202,7 @@
           +"<span class='state'>" + responseText.split("*")[2]+"</span>"
           + "</p></br>"
           + "<p class='date'>" + responseText.split("*")[3]+"</p>"
-          + "<img class='image'src=https://raw.githubusercontent.com/rudyrim/cardd/main/" + responseText.split("*")[4]+">"
+          +"<img class='image'src="+responseText.split("*")[4]+">"
           + "<p class='description'>" + responseText.split("*")[5]+"</p>"
           + "<Button class='lien'><a href='"+responseText.split("*")[6]+"'>"
           +responseText.split("*")[6]+"</a></Button>";   
@@ -156,21 +210,9 @@
     }
   
   </script>
-<script>
-  function myFunction() {
-    var x = document.getElementById("bodycalen");
-    var y = document.getElementById("bodyevent");
-    if (x.style.display === "none") {
-      x.style.display = "block";
-      y.style.display = "none";
-    } else {
-      x.style.display = "none";
-      y.style.display = "block";
-    }
-  }
-  
-  
-  (function($){
+
+<script>//Calendrier
+    (function($){
   $.fn.datepicker.dates['fr'] = {
   days: ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
   daysShort: ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."],
@@ -181,13 +223,12 @@
   monthsTitle: "Mois",
   clear: "Effacer",
   weekStart: 1,
-  format: "dd/mm/yyyy"
+  format: "dd-mm-yyyy"
   };
   }(jQuery));
-  
-  
+   
   $('#bodycalen').datepicker({
-    format: "dd.mm.yyyy",
+    format: "dd-mm-yyyy",
     startWeek: 1,
     inline:true,
     multidate: true,
@@ -196,22 +237,14 @@
     language: 'fr',
   autoclose: true,
     todayHighlight: true,
-  }).datepicker('setDates', [new Date(2021, 1, 16), new Date(2021, 1, 18), new Date(2021, 1, 17)]) .on('changeDate', showTestDate);
+  }).datepicker('setDates', listdate) .on('changeDate', showTestDate);
   
   
   function showTestDate(){
     var value = $('#bodycalen').datepicker('getFormattedDate');
-    document.getElementById('selectDate').innerHTML= value.substr(value.length-10, value.length);
-  
-    count = ['08h00','08h15','09h00','09h15'];
-    myFunction();
-  container = document.getElementById('bodyevent');
-  container.innerHTML="";
-  
-    for(i = 0; i < count.length; i++){
-      container.innerHTML+="<div><button class='items'>"+ count[i] +"</button></div>";
-    }
-    
+    selectDate=value.substr(value.length-10, value.length);
+    document.getElementById('selectDate').innerHTML= selectDate;
+    searchFile(selectDate);
   }
   </script>
 </body>
